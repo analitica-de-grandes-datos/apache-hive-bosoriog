@@ -16,6 +16,7 @@ Escriba el resultado a la carpeta `output` de directorio de trabajo.
 
 */
 
+
 DROP TABLE IF EXISTS t0;
 CREATE TABLE t0 (
     c1 STRING,
@@ -29,7 +30,8 @@ CREATE TABLE t0 (
         LINES TERMINATED BY '\n';
 LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 
-/*
-    >>> Escriba su respuesta a partir de este punto <<<
-*/
-
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT valor_l,key,count(key) 
+FROM t0 LATERAL VIEW EXPLODE(c3) lista AS key,valor LATERAL VIEW EXPLODE(c2) lista_2 AS valor_l
+GROUP BY valor_l,key;
